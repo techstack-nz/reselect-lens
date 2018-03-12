@@ -1,0 +1,51 @@
+{
+  "name": "reselect-lens",
+  "version": "1.0.0",
+  "description": "Visibilty for reselect in redux devtools",
+  "main": "./cjs/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "build": "babel es --out-dir cjs",
+    "clean": "rimraf cjs",
+    "lint": "eslint es test",
+    "test": "BABEL_ENV=test NODE_ENV=test mocha --recursive --require babel-register --require ./test/setup.js",
+    "test:watch": "npm test -- --watch",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "files": [
+    "cjs",
+    "es"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techstack-nz/reselect-lens.git"
+  },
+  "keywords": [
+    "reselect",
+    "redux",
+    "react",
+    "reactjs",
+    "react-native"
+  ],
+  "author": "Cameron Lindsay <cameron@techstack.co.nz> (http://github.com/cameron-lindsay)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/techstack-nz/reselect-lens/issues"
+  },
+  "homepage": "https://github.com/techstack-nz/reselect-lens#readme",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "eslint": "4.18.2",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.9.0",
+    "mocha": "5.0.4",
+    "redux": "3.7.2",
+    "reselect": "3.0.1"
+  },
+  "peerDependencies": {
+    "redux": "^3.0.0 || ^4.0.0-0",
+    "reselect": "^3.0.0 || ^4.0.0-0"
+  }
+}

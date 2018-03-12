@@ -5,6 +5,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Transpiled directories
+cjs
+
 # Runtime data
 pids
 *.pid
