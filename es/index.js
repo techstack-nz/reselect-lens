@@ -7,12 +7,6 @@ const createReducer = setAction =>
   (state = null, action) =>
     (action.type === setAction ? action.payload : state);
 
-const createReselector = (dispatch, selector, setAction) =>
-  createSelector(
-    [selector],
-    selectorVal => dispatch({ type: setAction, payload: selectorVal })
-  );
-
 export default (store, selectors, storeName = defaultStoreName) => {
   // if tools are not available, don't do anything. This should not
   // prevent the application from running.
@@ -21,6 +15,12 @@ export default (store, selectors, storeName = defaultStoreName) => {
   if (!composeWithDevTools) {
     return;
   }
+
+  const createReselector = (selector, setAction) =>
+    createSelector(
+      [selector],
+      selectorVal => rlStore.dispatch({ type: setAction, payload: selectorVal }) // eslint-disable-line
+    );
 
   // for each given selector, build a reselector and a reducer
   const reselectors =
@@ -31,7 +31,7 @@ export default (store, selectors, storeName = defaultStoreName) => {
 
         return {
           key,
-          reselector: createReselector(rlStore.dispatch, selectors[key], setAction), // eslint-disable-line
+          reselector: createReselector(selectors[key], setAction), // eslint-disable-line
           reducer: createReducer(setAction)
         };
       });
@@ -39,11 +39,13 @@ export default (store, selectors, storeName = defaultStoreName) => {
   // sort in alphabetical order
   reselectors.sort((a, b) => (a.key > b.key ? 1 : -1));
 
-  // subscribe to store, and call all reselectors when the store is updated
-  store.subscribe(() => {
+  const callAllReselectors = () => {
     const state = store.getState();
     reselectors.forEach(({ reselector }) => reselector(state));
-  });
+  };
+
+  // subscribe to store, and call all reselectors when the store is updated
+  store.subscribe(callAllReselectors);
 
   // build a new root reducer for the rlStore
   const reducers = {};
@@ -52,4 +54,7 @@ export default (store, selectors, storeName = defaultStoreName) => {
   // create a new store in which to house the computed values of the reselectors
   const composeEnhancers = composeWithDevTools({ name: storeName });
   const rlStore = createStore(combineReducers(reducers), composeEnhancers());
+
+  // call all reselectors to get the current state
+  callAllReselectors();
 };

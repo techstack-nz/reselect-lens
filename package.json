@@ -1,6 +1,6 @@
 {
   "name": "reselect-lens",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Visibilty for reselect in redux devtools",
   "main": "./cjs/index.js",
   "module": "./es/index.js",
