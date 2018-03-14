@@ -14,7 +14,12 @@
     "no-return-assign": "off",
     "no-param-reassign": "off"
   },
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  },
   "plugins": [
-    "import"
+    "import",
+    "jest"
   ]
 }

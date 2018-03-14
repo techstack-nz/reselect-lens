@@ -8,7 +8,8 @@
     "build": "babel es --out-dir cjs",
     "clean": "rimraf cjs",
     "lint": "eslint es test",
-    "test": "BABEL_ENV=test NODE_ENV=test mocha --recursive --require babel-register --require ./test/setup.js",
+    "jest": "jest",
+    "test": "NODE_ENV=test BABEL_ENV=test  jest --env=jsdom --verbose",
     "test:watch": "npm test -- --watch",
     "prepublishOnly": "npm run clean && npm run build"
   },
@@ -35,17 +36,19 @@
   "homepage": "https://github.com/techstack-nz/reselect-lens#readme",
   "devDependencies": {
     "babel-cli": "6.26.0",
+    "babel-jest": "20.0.3",
+    "babel-plugin-dynamic-import-node": "1.2.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "eslint": "4.18.2",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.9.0",
-    "mocha": "5.0.4",
+    "jest": "22.4.2",
     "redux": "3.7.2",
     "reselect": "3.0.1"
   },
   "peerDependencies": {
-    "redux": "^3.0.0 || ^4.0.0-0",
-    "reselect": "^3.0.0 || ^4.0.0-0"
+    "redux": "3.0.0 || 4.0.0-0",
+    "reselect": "3.0.0 || 4.0.0-0"
   }
 }
