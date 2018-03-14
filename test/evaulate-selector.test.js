@@ -15,7 +15,9 @@ describe('evaulate-selector', () => {
 
   afterEach(() => {
     expect(selector).toHaveBeenCalledTimes(1);
-    expect(selector).toHaveBeenCalledWith(globalState);
+    expect(selector).toHaveBeenCalledWith({
+      a: 'this doesnt really matter'
+    });
   });
 
   describe('when the previous state is null', () => {
