@@ -1,11 +1,8 @@
-import { createSelector } from 'reselect';
 import { createStore, combineReducers } from 'redux';
+import evaluateAllSelectors from './evaluate-all-selectors';
+import createReducer from './create-reducer';
 
 const defaultStoreName = 'reselect-lens';
-
-const createReducer = setAction =>
-  (state = null, action) =>
-    (action.type === setAction ? action.payload : state);
 
 export default (store, selectors, storeName = defaultStoreName) => {
   // if tools are not available, don't do anything. This should not
@@ -16,45 +13,35 @@ export default (store, selectors, storeName = defaultStoreName) => {
     return;
   }
 
-  const createReselector = (selector, setAction) =>
-    createSelector(
-      [selector],
-      selectorVal => rlStore.dispatch({ type: setAction, payload: selectorVal }) // eslint-disable-line
-    );
+  // identify selector names, and sort alphabetically
+  const selectorNames = Object.keys(selectors);
+  selectorNames.sort((a, b) => (a > b ? 1 : -1));
 
-  // for each given selector, build a reselector and a reducer
-  const reselectors =
-    Object
-      .keys(selectors)
-      .map((key) => {
-        const setAction = `${storeName}/SET_${key}`;
-
-        return {
-          key,
-          reselector: createReselector(selectors[key], setAction), // eslint-disable-line
-          reducer: createReducer(setAction)
-        };
-      });
-
-  // sort in alphabetical order
-  reselectors.sort((a, b) => (a.key > b.key ? 1 : -1));
-
-  const callAllReselectors = () => {
-    const state = store.getState();
-    reselectors.forEach(({ reselector }) => reselector(state));
-  };
-
-  // subscribe to store, and call all reselectors when the store is updated
-  store.subscribe(callAllReselectors);
-
-  // build a new root reducer for the rlStore
+  // create some stuff
+  const reselectors = [];
   const reducers = {};
-  reselectors.forEach(({ key, reducer }) => reducers[key] = reducer);
+
+  selectorNames.forEach((name) => {
+    const setAction = `${storeName}/SET_${name}`;
+
+    reselectors.push({
+      setAction,
+      selector: selectors[name],
+      previousState: null
+    });
+
+    reducers[name] = createReducer(setAction);
+  });
 
   // create a new store in which to house the computed values of the reselectors
   const composeEnhancers = composeWithDevTools({ name: storeName });
-  const rlStore = createStore(combineReducers(reducers), composeEnhancers());
+  const rootReducer = combineReducers(reducers);
+  const selectorStore = createStore(rootReducer, composeEnhancers());
 
-  // call all reselectors to get the current state
-  callAllReselectors();
+  // listen for changes to the original store...when something changes, evaluate all reselectors
+  const onChange = () => evaluateAllSelectors(reselectors, store.getState(), selectorStore);
+  store.subscribe(onChange);
+
+  // evaluate all reselectors to get the current state
+  onChange();
 };

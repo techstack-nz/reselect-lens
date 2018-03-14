@@ -11,7 +11,8 @@
       }
     ],
     "comma-dangle": "off",
-    "no-return-assign": "off"
+    "no-return-assign": "off",
+    "no-param-reassign": "off"
   },
   "plugins": [
     "import"
