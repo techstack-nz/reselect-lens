@@ -44,12 +44,6 @@ describe('evaulate-selector', () => {
       const result = evaluateSelector(selector, previousState, globalState);
       expect(result).toEqual({ ERROR: new Error('this is an error') });
     });
-
-    it('should return null if the selector returns undefined', () => {
-      selector.mockReturnValueOnce(undefined);
-      const result = evaluateSelector(selector, previousState, globalState);
-      expect(result).toBe(null);
-    });
   });
 
   describe('when the previous state is { foo: "bar" }', () => {
@@ -81,12 +75,6 @@ describe('evaulate-selector', () => {
       });
       const result = evaluateSelector(selector, previousState, globalState);
       expect(result).toEqual({ ERROR: new Error('this is an error') });
-    });
-
-    it('should return null if the selector returns undefined', () => {
-      selector.mockReturnValueOnce(undefined);
-      const result = evaluateSelector(selector, previousState, globalState);
-      expect(result).toBe(null);
     });
   });
 });

@@ -18,4 +18,10 @@ describe('create-reducer', () => {
     const result = reducer('current state', action);
     expect(result).toEqual('the payload');
   });
+
+  it('reducer should return null when action type is SET_FOO_BAR_BAZ and payload is undefined', () => {
+    const action = { type: 'SET_FOO_BAR_BAZ', payload: undefined };
+    const result = reducer('current state', action);
+    expect(result).toEqual(null);
+  });
 });
